@@ -106,14 +106,14 @@ body {
 
 <div class="markets">
   <div class="market-card">
-    <div class="name">DXY</div>
-    <div class="val" id="dxy-price">--</div>
-    <div id="dxy-change">--</div>
+    <div class="name">EURUSD</div>
+    <div class="val" id="eur-price">--</div>
+    <div id="eur-change">--</div>
   </div>
   <div class="market-card">
-    <div class="name">XAGUSD</div>
-    <div class="val" id="xag-price">--</div>
-    <div id="xag-change">--</div>
+    <div class="name">GBPUSD</div>
+    <div class="val" id="gbp-price">--</div>
+    <div id="gbp-change">--</div>
   </div>
   <div class="market-card">
     <div class="name">USDJPY</div>
@@ -139,7 +139,7 @@ body {
   </div>
   <div class="card">
     <h3>相关资产</h3>
-    <p>US10Y · SPX · VIX · USDJPY 实时监控中</p>
+    <p>EURUSD · GBPUSD · USDJPY 实时监控中</p>
   </div>
 </div>
 
@@ -206,10 +206,10 @@ async function updatePrices() {
   btn.disabled = true;
 
   try {
-    const [xau, dxy, xag, jpy] = await Promise.all([
+    const [xau, eur, gbp, jpy] = await Promise.all([
       fetchQuote("XAU/USD"),
-      fetchQuote("DXY"),
-      fetchQuote("XAG/USD"),
+      fetchQuote("EUR/USD"),
+      fetchQuote("GBP/USD"),
       fetchQuote("USD/JPY")
     ]);
 
@@ -217,13 +217,13 @@ async function updatePrices() {
       document.getElementById("xau-price").textContent = parseFloat(xau.close).toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2});
       document.getElementById("xau-change").innerHTML = formatChange(xau.change, xau.percent_change);
     }
-    if (dxy.close) {
-      document.getElementById("dxy-price").textContent = parseFloat(dxy.close).toFixed(2);
-      document.getElementById("dxy-change").innerHTML = formatChange(dxy.change, dxy.percent_change);
+    if (eur.close) {
+      document.getElementById("eur-price").textContent = parseFloat(eur.close).toFixed(5);
+      document.getElementById("eur-change").innerHTML = formatChange(eur.change, eur.percent_change);
     }
-    if (xag.close) {
-      document.getElementById("xag-price").textContent = parseFloat(xag.close).toFixed(2);
-      document.getElementById("xag-change").innerHTML = formatChange(xag.change, xag.percent_change);
+    if (gbp.close) {
+      document.getElementById("gbp-price").textContent = parseFloat(gbp.close).toFixed(5);
+      document.getElementById("gbp-change").innerHTML = formatChange(gbp.change, gbp.percent_change);
     }
     if (jpy.close) {
       document.getElementById("jpy-price").textContent = parseFloat(jpy.close).toFixed(2);
@@ -260,7 +260,7 @@ document.querySelectorAll('.tab').forEach(tab => {
 // Manual refresh
 document.getElementById("manual-refresh").addEventListener("click", updatePrices);
 
-// Auto refresh every 5 minutes (300000 ms)
+// Auto refresh every 5 minutes
 updatePrices();
 setInterval(updatePrices, 300000);
 </script>
