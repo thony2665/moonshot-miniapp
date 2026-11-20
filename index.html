@@ -1,40 +1,215 @@
-# Moonshot FXFX.AI Telegram Mini App (Demo Mockup)
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Moonshot FXFX.AI</title>
+<script src="https://telegram.org/js/telegram-web-app.js"></script>
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body {
+  background: #000;
+  color: #fff;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  padding: 12px;
+  padding-bottom: 80px;
+}
+.header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 16px;
+}
+.logo { font-size: 28px; }
+.title { font-size: 20px; font-weight: 700; }
+.subtitle { font-size: 12px; color: #888; }
+.price-card {
+  background: #111;
+  border-radius: 16px;
+  padding: 16px;
+  margin-bottom: 16px;
+  border: 1px solid #222;
+}
+.price-main {
+  font-size: 36px;
+  font-weight: 800;
+  letter-spacing: -1px;
+}
+.change { color: #ff3b30; font-weight: 600; margin-top: 4px; }
+.markets {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 8px;
+  margin-bottom: 16px;
+}
+.market-card {
+  background: #111;
+  border-radius: 12px;
+  padding: 10px;
+  border: 1px solid #222;
+  font-size: 13px;
+}
+.market-card .name { color: #aaa; }
+.market-card .val { font-weight: 700; margin: 2px 0; }
+.up { color: #34c759; }
+.down { color: #ff3b30; }
+.tabs {
+  display: flex;
+  gap: 6px;
+  overflow-x: auto;
+  margin-bottom: 16px;
+  padding-bottom: 4px;
+}
+.tab {
+  background: #1c1c1e;
+  color: #aaa;
+  padding: 8px 14px;
+  border-radius: 20px;
+  font-size: 13px;
+  white-space: nowrap;
+  border: 1px solid #333;
+}
+.tab.active { background: #ff8c00; color: #000; font-weight: 600; border-color: #ff8c00; }
+.card {
+  background: #111;
+  border-radius: 14px;
+  padding: 14px;
+  margin-bottom: 12px;
+  border: 1px solid #222;
+}
+.card h3 { font-size: 15px; margin-bottom: 8px; color: #ff8c00; }
+.float-btn {
+  position: fixed;
+  bottom: 20px;
+  right: 16px;
+  background: #007aff;
+  color: white;
+  border: none;
+  padding: 12px 18px;
+  border-radius: 24px;
+  font-weight: 600;
+  box-shadow: 0 4px 12px rgba(0,122,255,0.4);
+}
+.section { display: none; }
+.section.active { display: block; }
+</style>
+</head>
+<body>
+<div class="header">
+  <div class="logo">🚀</div>
+  <div>
+    <div class="title">Moonshot FXFX.AI</div>
+    <div class="subtitle">mini app</div>
+  </div>
+</div>
 
-这是根据用户上传的屏幕录制影片，高保真还原的 Telegram Mini App 前端演示版本。
+<div class="price-card">
+  <div style="font-size:14px;color:#aaa;">XAUUSD</div>
+  <div class="price-main">3,533.04</div>
+  <div class="change">↓ -2.36%</div>
+  <div style="font-size:12px;color:#666;margin-top:6px;">Market Closed · New York Time</div>
+</div>
 
-## 功能特点
-- 完全暗色主题，橙色强调色，匹配原版 UI 风格
-- 6 个阶段导航：观察 / 解释 / 结构 / 推演 / 审核 / 触发
-- 包含价格面板、市场联动、多个 AI Agent 卡片、关键位、情景推演、风险设置、历史信号、Paper Trading 等
-- 集成 Telegram WebApp SDK，可直接作为 Mini App 使用
-- 浮动「真人客服」按钮
+<div class="markets">
+  <div class="market-card">
+    <div class="name">DXY</div>
+    <div class="val">98.72</div>
+    <div class="up">↑ 0.31%</div>
+  </div>
+  <div class="market-card">
+    <div class="name">XAGUSD</div>
+    <div class="val">31.28</div>
+    <div class="down">↓ -1.12%</div>
+  </div>
+  <div class="market-card">
+    <div class="name">USDJPY</div>
+    <div class="val">156.43</div>
+    <div class="up">↑ 0.18%</div>
+  </div>
+</div>
 
-## 如何部署为真正的 Telegram Mini App
+<div class="tabs">
+  <div class="tab active" data-tab="observe">观察</div>
+  <div class="tab" data-tab="explain">解释</div>
+  <div class="tab" data-tab="structure">结构</div>
+  <div class="tab" data-tab="simulate">推演</div>
+  <div class="tab" data-tab="review">审核</div>
+  <div class="tab" data-tab="trigger">触发</div>
+</div>
 
-1. **托管文件**
-   - 将 `moonshot-fxfx-miniapp.html` 重命名为 `index.html`
-   - 上传到任意支持 HTTPS 的静态托管（推荐）：
-     - GitHub Pages
-     - Vercel / Netlify
-     - Cloudflare Pages
-     - 自己的服务器
+<div id="observe" class="section active">
+  <div class="card">
+    <h3>Market Pulse Agent</h3>
+    <p>正在扫描全球市场联动...</p>
+    <p style="margin-top:8px;color:#aaa;font-size:13px;">DXY 强势、美债收益率上行，对黄金形成压制。</p>
+  </div>
+  <div class="card">
+    <h3>相关资产</h3>
+    <p>US10Y · SPX · VIX · USDJPY 实时监控中</p>
+  </div>
+</div>
 
-2. **创建 Telegram Bot**
-   - 打开 [@BotFather](https://t.me/BotFather)
-   - 发送 `/newbot` 创建机器人
-   - 发送 `/newapp` 创建 Mini App
-   - 设置 Mini App 的 URL 为你托管的 `index.html` 地址（必须是 HTTPS）
+<div id="explain" class="section">
+  <div class="card">
+    <h3>News Flow</h3>
+    <p>最新宏观新闻与事件驱动分析</p>
+  </div>
+  <div class="card">
+    <h3>Discriminator</h3>
+    <p>叙事强度评估中...</p>
+  </div>
+</div>
 
-3. **测试**
-   - 在 BotFather 中获取 Mini App 链接（格式：`https://t.me/yourbot/app`）
-   - 在 Telegram 中打开即可看到效果
+<div id="structure" class="section">
+  <div class="card">
+    <h3>Chart Agent</h3>
+    <p>关键位：R3 3590 · R2 3565 · R1 3548</p>
+    <p>支撑：S1 3510 · S2 3485</p>
+    <p style="margin-top:8px;">EMA20 / EMA50 空头排列</p>
+  </div>
+</div>
 
-## 注意事项
-- 这是**前端演示版本**，所有数据为影片中的静态快照，不包含实时行情、真实 AI 推理后端或交易执行。
-- 原版系统涉及复杂的多 Agent 工作流、新闻抓取、路径模拟等，需要独立后端支持。
-- 如需完整功能复刻，需要另外开发数据源对接、Agent 逻辑、Telegram Bot 后端等。
+<div id="simulate" class="section">
+  <div class="card">
+    <h3>情景推演</h3>
+    <p>路径 A（40%）：继续下探 3510</p>
+    <p>路径 B（35%）：反弹测试 3548</p>
+    <p>路径 C（25%）：震荡整理</p>
+  </div>
+</div>
 
-## 文件
-- `moonshot-fxfx-miniapp.html` — 完整单文件 Mini App
+<div id="review" class="section">
+  <div class="card">
+    <h3>Red Team + Risk</h3>
+    <p>风险预算：单笔 0.5R</p>
+    <p>最大回撤限制：3R</p>
+  </div>
+</div>
 
-打开此文件即可在浏览器中预览（建议使用手机模式或直接在 Telegram 中打开）。
+<div id="trigger" class="section">
+  <div class="card">
+    <h3>Trigger Agent</h3>
+    <p>当前无触发信号</p>
+    <p style="color:#aaa;font-size:13px;margin-top:6px;">等待结构确认 + 风险通过</p>
+  </div>
+</div>
+
+<button class="float-btn">真人客服</button>
+
+<script>
+Telegram.WebApp.ready();
+Telegram.WebApp.expand();
+Telegram.WebApp.setHeaderColor('#000000');
+Telegram.WebApp.setBackgroundColor('#000000');
+
+document.querySelectorAll('.tab').forEach(tab => {
+  tab.addEventListener('click', () => {
+    document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+    document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+    tab.classList.add('active');
+    document.getElementById(tab.dataset.tab).classList.add('active');
+  });
+});
+</script>
+</body>
+</html>
