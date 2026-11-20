@@ -12,17 +12,22 @@ body {
   color: #fff;
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
   padding: 12px;
-  padding-bottom: 80px;
+  padding-bottom: 90px;
 }
-.header {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  margin-bottom: 16px;
-}
+.header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px; }
+.header-left { display: flex; align-items: center; gap: 10px; }
 .logo { font-size: 28px; }
 .title { font-size: 20px; font-weight: 700; }
 .subtitle { font-size: 12px; color: #888; }
+.refresh-btn {
+  background: #1c1c1e;
+  color: #ff8c00;
+  border: 1px solid #ff8c00;
+  padding: 6px 12px;
+  border-radius: 16px;
+  font-size: 13px;
+  font-weight: 600;
+}
 .price-card {
   background: #111;
   border-radius: 16px;
@@ -30,18 +35,9 @@ body {
   margin-bottom: 16px;
   border: 1px solid #222;
 }
-.price-main {
-  font-size: 36px;
-  font-weight: 800;
-  letter-spacing: -1px;
-}
-.change { color: #ff3b30; font-weight: 600; margin-top: 4px; }
-.markets {
-  display: grid;
-  grid-template-columns: 1fr 1fr 1fr;
-  gap: 8px;
-  margin-bottom: 16px;
-}
+.price-main { font-size: 36px; font-weight: 800; letter-spacing: -1px; }
+.change { font-weight: 600; margin-top: 4px; }
+.markets { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; margin-bottom: 16px; }
 .market-card {
   background: #111;
   border-radius: 12px;
@@ -50,16 +46,10 @@ body {
   font-size: 13px;
 }
 .market-card .name { color: #aaa; }
-.market-card .val { font-weight: 700; margin: 2px 0; }
+.market-card .val { font-weight: 700; margin: 2px 0; font-size: 15px; }
 .up { color: #34c759; }
 .down { color: #ff3b30; }
-.tabs {
-  display: flex;
-  gap: 6px;
-  overflow-x: auto;
-  margin-bottom: 16px;
-  padding-bottom: 4px;
-}
+.tabs { display: flex; gap: 6px; overflow-x: auto; margin-bottom: 16px; padding-bottom: 4px; }
 .tab {
   background: #1c1c1e;
   color: #aaa;
@@ -92,39 +82,43 @@ body {
 }
 .section { display: none; }
 .section.active { display: block; }
+.status { font-size: 11px; color: #666; margin-top: 4px; }
 </style>
 </head>
 <body>
 <div class="header">
-  <div class="logo">🚀</div>
-  <div>
-    <div class="title">Moonshot FXFX.AI</div>
-    <div class="subtitle">mini app</div>
+  <div class="header-left">
+    <div class="logo">🚀</div>
+    <div>
+      <div class="title">Moonshot FXFX.AI</div>
+      <div class="subtitle">mini app · Live</div>
+    </div>
   </div>
+  <button class="refresh-btn" id="manual-refresh">立即刷新</button>
 </div>
 
 <div class="price-card">
   <div style="font-size:14px;color:#aaa;">XAUUSD</div>
-  <div class="price-main">3,533.04</div>
-  <div class="change">↓ -2.36%</div>
-  <div style="font-size:12px;color:#666;margin-top:6px;">Market Closed · New York Time</div>
+  <div class="price-main" id="xau-price">--</div>
+  <div class="change" id="xau-change">--</div>
+  <div class="status" id="update-time">正在加载行情...</div>
 </div>
 
 <div class="markets">
   <div class="market-card">
     <div class="name">DXY</div>
-    <div class="val">98.72</div>
-    <div class="up">↑ 0.31%</div>
+    <div class="val" id="dxy-price">--</div>
+    <div id="dxy-change">--</div>
   </div>
   <div class="market-card">
     <div class="name">XAGUSD</div>
-    <div class="val">31.28</div>
-    <div class="down">↓ -1.12%</div>
+    <div class="val" id="xag-price">--</div>
+    <div id="xag-change">--</div>
   </div>
   <div class="market-card">
     <div class="name">USDJPY</div>
-    <div class="val">156.43</div>
-    <div class="up">↑ 0.18%</div>
+    <div class="val" id="jpy-price">--</div>
+    <div id="jpy-change">--</div>
   </div>
 </div>
 
@@ -141,7 +135,7 @@ body {
   <div class="card">
     <h3>Market Pulse Agent</h3>
     <p>正在扫描全球市场联动...</p>
-    <p style="margin-top:8px;color:#aaa;font-size:13px;">DXY 强势、美债收益率上行，对黄金形成压制。</p>
+    <p style="margin-top:8px;color:#aaa;font-size:13px;" id="pulse-text">加载中...</p>
   </div>
   <div class="card">
     <h3>相关资产</h3>
@@ -150,31 +144,21 @@ body {
 </div>
 
 <div id="explain" class="section">
-  <div class="card">
-    <h3>News Flow</h3>
-    <p>最新宏观新闻与事件驱动分析</p>
-  </div>
-  <div class="card">
-    <h3>Discriminator</h3>
-    <p>叙事强度评估中...</p>
-  </div>
+  <div class="card"><h3>News Flow</h3><p>最新宏观新闻与事件驱动分析</p></div>
+  <div class="card"><h3>Discriminator</h3><p>叙事强度评估中...</p></div>
 </div>
 
 <div id="structure" class="section">
   <div class="card">
     <h3>Chart Agent</h3>
-    <p>关键位：R3 3590 · R2 3565 · R1 3548</p>
-    <p>支撑：S1 3510 · S2 3485</p>
-    <p style="margin-top:8px;">EMA20 / EMA50 空头排列</p>
+    <p>关键位动态计算中...</p>
   </div>
 </div>
 
 <div id="simulate" class="section">
   <div class="card">
     <h3>情景推演</h3>
-    <p>路径 A（40%）：继续下探 3510</p>
-    <p>路径 B（35%）：反弹测试 3548</p>
-    <p>路径 C（25%）：震荡整理</p>
+    <p>根据实时价格动态调整路径概率</p>
   </div>
 </div>
 
@@ -182,15 +166,13 @@ body {
   <div class="card">
     <h3>Red Team + Risk</h3>
     <p>风险预算：单笔 0.5R</p>
-    <p>最大回撤限制：3R</p>
   </div>
 </div>
 
 <div id="trigger" class="section">
   <div class="card">
     <h3>Trigger Agent</h3>
-    <p>当前无触发信号</p>
-    <p style="color:#aaa;font-size:13px;margin-top:6px;">等待结构确认 + 风险通过</p>
+    <p>等待结构确认 + 风险通过</p>
   </div>
 </div>
 
@@ -202,6 +184,70 @@ Telegram.WebApp.expand();
 Telegram.WebApp.setHeaderColor('#000000');
 Telegram.WebApp.setBackgroundColor('#000000');
 
+const API_KEY = "5a171db0db644d01a8056f212638ed04";
+
+async function fetchQuote(symbol) {
+  const url = `https://api.twelvedata.com/quote?symbol=${symbol}&apikey=${API_KEY}`;
+  const res = await fetch(url);
+  return await res.json();
+}
+
+function formatChange(change, percent) {
+  const isUp = parseFloat(change) >= 0;
+  const sign = isUp ? "↑" : "↓";
+  const cls = isUp ? "up" : "down";
+  return `<span class="${cls}">${sign} ${Math.abs(parseFloat(percent)).toFixed(2)}%</span>`;
+}
+
+async function updatePrices() {
+  const btn = document.getElementById("manual-refresh");
+  const originalText = btn.textContent;
+  btn.textContent = "刷新中...";
+  btn.disabled = true;
+
+  try {
+    const [xau, dxy, xag, jpy] = await Promise.all([
+      fetchQuote("XAU/USD"),
+      fetchQuote("DXY"),
+      fetchQuote("XAG/USD"),
+      fetchQuote("USD/JPY")
+    ]);
+
+    if (xau.close) {
+      document.getElementById("xau-price").textContent = parseFloat(xau.close).toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2});
+      document.getElementById("xau-change").innerHTML = formatChange(xau.change, xau.percent_change);
+    }
+    if (dxy.close) {
+      document.getElementById("dxy-price").textContent = parseFloat(dxy.close).toFixed(2);
+      document.getElementById("dxy-change").innerHTML = formatChange(dxy.change, dxy.percent_change);
+    }
+    if (xag.close) {
+      document.getElementById("xag-price").textContent = parseFloat(xag.close).toFixed(2);
+      document.getElementById("xag-change").innerHTML = formatChange(xag.change, xag.percent_change);
+    }
+    if (jpy.close) {
+      document.getElementById("jpy-price").textContent = parseFloat(jpy.close).toFixed(2);
+      document.getElementById("jpy-change").innerHTML = formatChange(jpy.change, jpy.percent_change);
+    }
+
+    const now = new Date().toLocaleTimeString();
+    document.getElementById("update-time").textContent = "已更新 · " + now;
+
+    const xauChg = parseFloat(xau.percent_change || 0);
+    document.getElementById("pulse-text").textContent = xauChg >= 0 
+      ? "黄金走强，关注上方阻力。" 
+      : "黄金承压，关注下方支撑。";
+
+  } catch (e) {
+    document.getElementById("update-time").textContent = "刷新失败，请检查网络或额度";
+    console.error(e);
+  } finally {
+    btn.textContent = originalText;
+    btn.disabled = false;
+  }
+}
+
+// Tab switching
 document.querySelectorAll('.tab').forEach(tab => {
   tab.addEventListener('click', () => {
     document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
@@ -210,6 +256,13 @@ document.querySelectorAll('.tab').forEach(tab => {
     document.getElementById(tab.dataset.tab).classList.add('active');
   });
 });
+
+// Manual refresh
+document.getElementById("manual-refresh").addEventListener("click", updatePrices);
+
+// Auto refresh every 5 minutes (300000 ms)
+updatePrices();
+setInterval(updatePrices, 300000);
 </script>
 </body>
 </html>
